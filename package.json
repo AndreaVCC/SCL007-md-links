@@ -1,6 +1,11 @@
 {
   "name": "md-links",
   "version": "0.1.0",
+  "description": "",
+  "main": "indes.js",
+  "bin": {
+    "md-links": "./index.js"
+  },
   "dependencies": {
     "markdown-link-extractor": "^1.2.0",
     "node-fetch": "^2.3.0"
