@@ -113,7 +113,7 @@ mdLinks()
 
 
 if (require.main === module) {
-  // this module was run directly from the command line as in node xxx.js
+  mdLinks()
 } else {
   // this module was not run directly from the command line and probably loaded by something else
 }
