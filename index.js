@@ -109,7 +109,7 @@ mdLinks = (p, v, s) => {
 
 
 };
-mdLinks()
+
 
 
 if (require.main === module) {
