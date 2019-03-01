@@ -1,7 +1,13 @@
 {
   "name": "md-links",
   "version": "0.1.0",
-  "description": "",
+  "description": "Módulo analiza los link de archivos .md y entrega su estado de validez",
+  "author": {
+    "name": "Andrea Carreño",
+    "email": "a.carreocoppo2@gmail.com",
+    "url": ""
+  },
+  "license": "MIT",
   "main": "index.js",
   "bin": {
     "mdLinks": "./index.js"
