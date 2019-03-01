@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path')
 const markdownLinkExtractor = require('markdown-link-extractor');
@@ -9,7 +8,9 @@ const fetch = require('node-fetch'); //
 // process.argv[3] == '2'
 // process.argv[4] == '3'
 const ruta = process.argv[2];
+const validStat = process.argv[3];
 let urabsolute = path.resolve(ruta);
+
 const markdown = fs.readFileSync(urabsolute).toString();
 const links = markdownLinkExtractor(markdown);
 
@@ -19,39 +20,66 @@ const links = markdownLinkExtractor(markdown);
 
 //console.log(links) muestra arreglo con los links
 
-mdlinks = (h,v,s) => {
 
-const arrayFetch = []; 
+mdLinks = (p, v, s) => {
 
-for (let i = 0; i < links.length; i++) {
-  const url = links[i].href;
-  const text = links[i].text;
+  const arrayFetch = [];
 
-  const linkArray = fetch(url) 
-    .then(res => {
-      const objectLinks = {
-        href: `${res.url}`,
-        text: text || "Sin texto",
-        statusLink: `${res.status} ${res.statusText}`,     
-      };
-      return objectLinks;
-    })
-    .catch(err => {
-      const objectFail = { 
-        href: `${url}`,
-        Error: "Link no disponible",
-      };
-      return objectFail;
-    });
-  arrayFetch.push(linkArray);
-}
+  for (let i = 0; i < links.length; i++) {
+    const url = links[i].href;
+    const text = links[i].text;
 
-Promise.all(arrayFetch)
+
+    const linkArray = fetch(url)
+
+      .then(res => {
+
+        if (validStat === '--validate') {
+          const objectLinks = {
+            href: `${res.url}`,
+            text: text || "Sin texto",
+            ruta: urabsolute,
+            statusLink: `${res.status} ${res.statusText}`,
+          };
+          return objectLinks;
+
+        } else {
+          const objectLinks = {
+            href: `${res.url}`,
+            text: text || "Sin texto",
+            ruta: urabsolute,
+          };
+          return objectLinks;
+        }
+      })
+
+      .catch(err => {
+        const objectFail = {
+          href: `${url}`,
+          text: text || "Sin texto",
+          Error: "LINK NO DISPONIBLE",
+        };
+        return objectFail;
+      });
+
+    arrayFetch.push(linkArray);
+  }
+
+  Promise.all(arrayFetch)
     .then(arrayResp => {
-    console.log(arrayResp);
+      console.log(arrayResp);
     });
 
 
 
 };
-mdlinks()
+mdLinks()
+
+
+if (require.main === module) {
+  // this module was run directly from the command line as in node xxx.js
+} else {
+  // this module was not run directly from the command line and probably loaded by something else
+}
+
+
