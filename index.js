@@ -1,7 +1,43 @@
-const fs = require('fs');
+//----------------------------------MODULO MARKDOWN LINK EXTRACTOR MODIFICADO----------------------------------------------
+var marked = require('marked');
+function markdownLinkExtractor(markdown) {
+    var links = [];
+
+    var renderer = new marked.Renderer();
+
+    // Taken from https://github.com/markedjs/marked/issues/1279
+    var linkWithImageSizeSupport = /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|[^\[\]\\])*?)\]\(\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f()\\]*\)|[^\s\x00-\x1f()\\])*?(?:\s+=(?:[\w%]+)?x(?:[\w%]+)?)?)(?:\s+("(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)))?\s*\)/;
+
+    marked.InlineLexer.rules.normal.link = linkWithImageSizeSupport;
+    marked.InlineLexer.rules.gfm.link = linkWithImageSizeSupport;
+    marked.InlineLexer.rules.breaks.link = linkWithImageSizeSupport;
+    
+    renderer.link = function (href, title, text) {
+        links.push({
+            href: href,
+            text: text
+        });
+    };
+
+    renderer.image = function (href, title, text) {
+        // Remove image size at the end, e.g. ' =20%x50'
+        href = href.replace(/ =\d*%?x\d*%?$/, "");
+        links.push({
+            href: href,
+            text: text
+        });
+    };
+    marked(markdown, { renderer: renderer });
+
+    return links;
+};
+//----------------------------------MODULO MARKDOWN LINK EXTRACTOR MODIFICADO----------------------------------------------
+const chalk = require('chalk');
+
+
 const path = require('path')
-const markdownLinkExtractor = require('markdown-link-extractor');
-const fetch = require('node-fetch'); //
+const fetch = require('node-fetch'); 
+
 // process.argv[0] == 'node'
 // process.argv[1] == 'archivo js al que se refiere'
 // process.argv[2] == '1'
@@ -11,14 +47,14 @@ const ruta = process.argv[2];
 const validStat = process.argv[3];
 let urabsolute = path.resolve(ruta);
 
+
+const fs = require('fs');
+//const markdownLinkExtractor = require('markdown-link-extractor'); MODULO
 const markdown = fs.readFileSync(urabsolute).toString();
 const links = markdownLinkExtractor(markdown);
-
 // links.forEach( link => {
 //     console.log(link);
 //  });
-
-//console.log(links) muestra arreglo con los links
 
 
 mdLinks = (p, v, s) => {
