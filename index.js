@@ -34,21 +34,20 @@ function markdownLinkExtractor(markdown) {
 //----------------------------------MODULO MARKDOWN LINK EXTRACTOR MODIFICADO----------------------------------------------
 const chalk = require('chalk');
 
-
+const fs = require('fs');
 const path = require('path')
 const fetch = require('node-fetch'); 
 
 // process.argv[0] == 'node'
-// process.argv[1] == 'archivo js al que se refiere'
-// process.argv[2] == '1'
-// process.argv[3] == '2'
+// process.argv[1] == 'archivo js al que se refiere' index.js
+// process.argv[2] == 'ruta' readme
+// process.argv[3] == 'validate o stats'
 // process.argv[4] == '3'
 const ruta = process.argv[2];
 const validStat = process.argv[3];
 let urabsolute = path.resolve(ruta);
 
 
-const fs = require('fs');
 //const markdownLinkExtractor = require('markdown-link-extractor'); MODULO
 const markdown = fs.readFileSync(urabsolute).toString();
 const links = markdownLinkExtractor(markdown);
